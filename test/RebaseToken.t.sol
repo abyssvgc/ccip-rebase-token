@@ -21,12 +21,8 @@ contract RebaseTokenTest is Test {
         rebaseToken = new RebaseToken();
         vault = new Vault(IRebaseToken(address(rebaseToken)));
         rebaseToken.grantMintAndBurnRole(address(vault));
-        (bool success,) = payable(address(vault)).call{value: 1e18}("");
+        vm.deal(address(vault), 1e18);
         vm.stopPrank();
-    }
-
-    function addRewardsToVault(uint256 rewardAmount) public {
-        (bool success,) = payable(address(vault)).call{value: rewardAmount}("");
     }
 
     function testDepositLinear(uint256 amount) public {
@@ -80,8 +76,8 @@ contract RebaseTokenTest is Test {
         uint256 balanceAfterSomeTime = rebaseToken.balanceOf(user);
 
         vm.deal(owner, balanceAfterSomeTime - depositAmount);
-        vm.prank(owner);
-        addRewardsToVault(balanceAfterSomeTime - depositAmount);
+
+        vm.deal(address(vault), balanceAfterSomeTime);
 
         vm.prank(user);
         vault.redeem(type(uint256).max);
@@ -128,9 +124,9 @@ contract RebaseTokenTest is Test {
     function testCannotCallMintAndBurn() public {
         vm.prank(user);
         vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
-        rebaseToken.mint(user, 100, rebaseToken.getInterestRate());
+        rebaseToken.mint(user, 1e5, 100);
         vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
-        rebaseToken.burn(user, 100);
+        rebaseToken.burn(user, 1e5);
     }
 
     function testGetPrincipleAmount(uint256 amount) public {
