@@ -110,7 +110,6 @@ contracts/yarn.lock
 /core/scripts/ccip/revert-reason/bin/ccip-revert-reason
 
 # dependencies generated after running `go mod vendor`
-vendor/
 go.work*
 
 # This sometimes shows up for some reason
@@ -127,4 +126,3 @@ override*.toml
 
 ocr_soak_report.csv
 
-vendor/*
