@@ -110,6 +110,7 @@ func Test_Eth_Errors(t *testing.T) {
 			{"gas price too low", false, "Arbitrum"},
 			{"client error replacement underpriced", true, "tomlConfig"},
 			{"", false, "tomlConfig"},
+			{"failed to forward tx to sequencer, please try again. Error message: 'replacement transaction underpriced'", true, "Mantle"},
 		}
 
 		for _, test := range tests {
@@ -142,6 +143,8 @@ func Test_Eth_Errors(t *testing.T) {
 			{"ErrorObject { code: ServerError(3), message: \\\"known transaction. transaction with hash 0xf016…ad63 is already in the system\\\", data: Some(RawValue(\\\"0x\\\")) }", true, "zkSync"},
 			{"client error transaction already in mempool", true, "tomlConfig"},
 			{"alreadyknown", true, "Gnosis"},
+			{"failed to forward tx to sequencer, please try again. Error message: 'already known'", true, "Mantle"},
+			{"tx already exists in cache", true, "Sei"},
 		}
 		for _, test := range tests {
 			err = evmclient.NewSendErrorS(test.message)
@@ -418,6 +421,11 @@ func Test_Eth_Errors_Fatal(t *testing.T) {
 		{"client error fatal", true, "tomlConfig"},
 		{"[Request ID: d9711488-4c1e-4af2-bc1f-7969913d7b60] Error invoking RPC: transaction 0.0.4425573@1718213476.914320044 failed precheck with status INVALID_SIGNATURE", true, "hedera"},
 		{"invalid chain id for signer", true, "Treasure"},
+
+		{": out of gas", true, "Sei"},
+		{"Tx too large. Max size is 2048576, but got 2097431", true, "Sei"},
+		{": insufficient funds", true, "Sei"},
+		{"insufficient fee", true, "Sei"},
 	}
 
 	for _, test := range tests {
