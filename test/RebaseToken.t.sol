@@ -22,12 +22,13 @@ contract RebaseTokenTest is Test {
         vault = new Vault(IRebaseToken(address(rebaseToken)));
         rebaseToken.grantMintAndBurnRole(address(vault));
         (bool success,) = payable(address(vault)).call{value: 1e18}("");
+        success;
         vm.stopPrank();
     }
 
     function addRewardsToVault(uint256 rewardAmount) public {
         (bool success,) = payable(address(vault)).call{value: rewardAmount}("");
-        // vm.assume(success); // Optionally, assume the transfer succeeds
+        success;
     }
 
     function testDepositLinear(uint256 amount) public {
